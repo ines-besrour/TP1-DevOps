@@ -1,43 +1,66 @@
-import { Controller, Get, Post, Delete, Put, Body, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Put, Body, Param, NotFoundException, UseInterceptors, Patch, ParseIntPipe, Query } from '@nestjs/common';
 import { TodoModel, TodoStatus } from './TodoModel';
 import { v4 as uuidv4 } from 'uuid';
 import { AddTodoDto } from './dto/add-todo.dto';
 import { EditTodoDto } from './dto/edit-todo.dto';
 import { TodoService } from './todo.service';
+import { DurationInterceptor } from 'src/interceptors/duration/duration.interceptor';
+import { promises } from 'dns';
+import { TodoEntity } from './entities/entities/TodoEntity';
+import { SearchTodoDto } from './dto/search-todo-dto';
+
 
 @Controller('todo')
 export class TodoController {
   constructor(private todoService:TodoService){}
   
-  @Get()
-  getTodos() {
-    return this.todoService.getTodos();
-  }
+//  @Get()
+//  async getTodos() {
+//    return await this.todoService.getTodos();
+//  }
+
+@Get()
+async findAll(@Query() queryParam: SearchTodoDto): Promise<TodoEntity[]> {
+  return await this.todoService.getTodos(queryParam);
+}
 
   @Post()
-  addTodo( @Body() todoData: AddTodoDto ) {
-    return this.todoService.addTodo(todoData);
+  async addTodoBD( @Body() todoData: AddTodoDto ): Promise<TodoEntity> {
+    return await this.todoService.addTodoBD(todoData);
   }
 
+  @Get('status')
+  async nbTodoByState() {
+    return await this.todoService.nbTodoByState();
+  }
+
+
+  @Get('/restore/:id')
+  async restoreTodo(
+    @Param('id')id)
+    {
+      return await this.todoService.restoreTodo(id);
+    }
+
   @Get('/:id')
-  getTodoById(
+  async getTodoById(
     @Param('id')id
   ){
-    return this.todoService.getTodoById(id);
+    return await this.todoService.getTodoById(id);
   }
 
   @Delete('/:id')
-  deleteTodoById(
+  async deleteTodoById(
     @Param('id')id
-  ) {
-    return this.todoService.deleteTodoById(id);
+  ){
+    return await this.todoService.softDeleteTodo(id);
   }
 
-  @Put('/:id')
-  editTodo(
+  @Patch('/:id')
+  async editTodo(
     @Param('id')id,
-    @Body() newtodo: Partial<EditTodoDto>
-  ) {
-    return this.todoService.editTodo(id,newtodo);
+    @Body() todo: Partial<EditTodoDto>
+  ): Promise<TodoEntity>  {
+    return await this.todoService.editTodo(id,todo);
   }
 }
