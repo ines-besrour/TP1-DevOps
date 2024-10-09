@@ -4,8 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { AddTodoDto } from './dto/add-todo.dto';
 import { EditTodoDto } from './dto/edit-todo.dto';
 import { TodoService } from './todo.service';
-import { DurationInterceptor } from 'src/interceptors/duration/duration.interceptor';
-import { promises } from 'dns';
 import { TodoEntity } from './entities/entities/TodoEntity';
 import { SearchTodoDto } from './dto/search-todo-dto';
 
@@ -19,10 +17,11 @@ export class TodoController {
 //    return await this.todoService.getTodos();
 //  }
 
-@Get()
-async findAll(@Query() queryParam: SearchTodoDto): Promise<TodoEntity[]> {
-  return await this.todoService.getTodos(queryParam);
-}
+
+  @Get()
+  async getTodos(@Query() queryParam: SearchTodoDto): Promise<TodoEntity[]> {
+    return await this.todoService.getTodos(queryParam);
+  }
 
   @Post()
   async addTodoBD( @Body() todoData: AddTodoDto ): Promise<TodoEntity> {

@@ -16,7 +16,7 @@ class APIfeatures {
   
     paginating() {
       const page = this.queryString.page || 1;
-      const limit = this.queryString.limit || 9;
+      const limit = this.queryString.limit || 20;
       const skip = (page - 1) * limit;
       this.query = this.query.offset(skip).limit(limit);
       return this;
@@ -56,6 +56,7 @@ export class TodoService {
         const feature = new APIfeatures(qb, pagination).paginating();
         return await feature.query.getMany();
       }
+
 
     async  addTodoBD(todoData : AddTodoDto) : Promise<TodoEntity>{
         return await this.TodoRepository.save(todoData);

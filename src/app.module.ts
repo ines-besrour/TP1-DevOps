@@ -8,7 +8,10 @@ import { FirstMiddleware } from './midddlewares/first/first.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { TodoEntity } from './todo/entities/entities/TodoEntity';
-import { DateEntity } from './todo/entities/entities/DateEntity';
+import { UserEntity } from './user/entities/UserEntity';
+import { AuthentificationModule } from './authentification/authentification.module';
+import { AuthentificationController } from './authentification/authentification.controller';
+
 
 //import HelmetMiddlware from 'helmet'
 
@@ -23,18 +26,18 @@ import { DateEntity } from './todo/entities/entities/DateEntity';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
+      password: '14656718',
       database: 'nest-js',
       autoLoadEntities: true,
-      entities: [TodoEntity,DateEntity],
+      entities: [TodoEntity,UserEntity],
       synchronize: true,
       debug: false
     }),    
-    TodoModule,
+    TodoModule, AuthentificationModule,
 
 
   ],
-  controllers: [AppController],
+  controllers: [AppController, AuthentificationController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
